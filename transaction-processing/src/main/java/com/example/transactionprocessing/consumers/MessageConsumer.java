@@ -34,7 +34,7 @@ public class MessageConsumer {
 
     @RabbitListener(queues = QUEUE, concurrency = "1")
     public void listenAndFetchResponse(Long transactionId) {
-        log.info("### In Consumer service : {}",transactionId);
+        log.info("### In Consumer service : {}", transactionId);
         Optional<Transaction> transactionById = transactionRepository.findById(transactionId);
         if (transactionById.isPresent()) {
             log.info("transactionById : {}", transactionById.get());
@@ -42,12 +42,11 @@ public class MessageConsumer {
                     .accountNumber(transactionById.get().getAccountNumber())
                     .accountBalance(transactionById.get().getBalance())
                     .build();
-             accountManagementConsumer.updateAccount(updateBalance);
+            accountManagementConsumer.updateAccount(updateBalance);
             transactionById.get().setStatus(TransactionStatus.COMPLETED);
-            String accountEmail="2020dataanalytics@gmail.com";
-
+            transactionRepository.save(transactionById.get());
+            String accountEmail = "2020dataanalytics@gmail.com";
             sendEmailNotification(transactionById.get(), accountEmail);
-
             log.info("Updated Balance : {}", updateBalance.getAccountBalance());
         }
 
@@ -56,13 +55,11 @@ public class MessageConsumer {
 
     private void sendEmailNotification(Transaction transaction, String accountEmail) {
 
-        String message = "";
-
         EmailNotification buildEmail = EmailNotification.builder()
                 .sender(username)
                 .subject("Banking Platform Notification")
                 .body(String.format(messagePropertiesService.getByKey("messages.email.transaction.processing.complete"),
-                        transaction.getAccountNumber(),transaction.getTransactionType(),transaction.getAmount(),
+                        transaction.getAccountNumber(), transaction.getTransactionType(), transaction.getAmount(),
                         transaction.getTransactionReference(),
                         transaction.getBalance()))
                 .to(accountEmail)
