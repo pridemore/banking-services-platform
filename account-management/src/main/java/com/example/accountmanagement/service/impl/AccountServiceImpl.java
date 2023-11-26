@@ -7,6 +7,7 @@ import com.example.accountmanagement.common.response.CommonResponse;
 import com.example.accountmanagement.domain.Account;
 import com.example.accountmanagement.domain.UserDetail;
 import com.example.accountmanagement.domain.dto.AccountDto;
+import com.example.accountmanagement.domain.dto.UpdateAccountDto;
 import com.example.accountmanagement.domain.dto.UserDetailDto;
 import com.example.accountmanagement.persistance.AccountRepository;
 import com.example.accountmanagement.persistance.UserDetailRepository;
@@ -61,6 +62,17 @@ public class AccountServiceImpl implements AccountService {
                 .build();
 
         return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS, userDetail);
+    }
+
+    @Override
+    public CommonResponse updateAccount(UpdateAccountDto updateAccountDto) {
+        Optional<Account> accountToUpdate=accountRepository.findByAccountNumber(updateAccountDto.getAccountNumber());
+        if(!accountToUpdate.isPresent()){
+            return new CommonResponse().buildErrorResponse("Account Does Not Exist");
+        }
+        accountToUpdate.get().setAccountBalance(updateAccountDto.getAccountBalance());
+        Account updatedAccount=accountRepository.save(accountToUpdate.get());
+        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS,updatedAccount);
     }
 
     private Account buildAccount(AccountDto accountDto, UserDetail userDetail) {

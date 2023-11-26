@@ -24,7 +24,7 @@ public class Account {
             strategy = GenerationType.IDENTITY
     )
     private long id;
-    @Column(unique=true)
+    @Column(unique=true,updatable = false, nullable = false)
     private String accountNumber;
 
     @Enumerated(EnumType.STRING)
