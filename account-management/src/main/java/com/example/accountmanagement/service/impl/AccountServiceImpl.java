@@ -7,17 +7,21 @@ import com.example.accountmanagement.common.response.CommonResponse;
 import com.example.accountmanagement.domain.Account;
 import com.example.accountmanagement.domain.UserDetail;
 import com.example.accountmanagement.domain.dto.AccountDto;
+import com.example.accountmanagement.domain.dto.UserDetailDto;
 import com.example.accountmanagement.persistance.AccountRepository;
 import com.example.accountmanagement.persistance.UserDetailRepository;
 import com.example.accountmanagement.service.api.AccountService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AccountServiceImpl implements AccountService {
 
     private final UserDetailRepository userDetailRepository;
@@ -36,6 +40,27 @@ public class AccountServiceImpl implements AccountService {
         Account savedAccount = accountRepository.save(buildAccount(accountDto, foundUserDetail.get()));
 
         return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS, savedAccount);
+    }
+
+    @Override
+    public CommonResponse getUserDetailByAccount(String accountNumber) {
+
+        Optional<Account> foundAccount = accountRepository.findByAccountNumber(accountNumber);
+
+        if (!foundAccount.isPresent()) {
+            return new CommonResponse().buildErrorResponse("Account Does Not Exist");
+        }
+        UserDetailDto userDetail = UserDetailDto.builder()
+                .name(foundAccount.get().getUserDetail().getName())
+                .surname(foundAccount.get().getUserDetail().getSurname())
+                .nationalId(foundAccount.get().getUserDetail().getNationalId())
+                .gender(foundAccount.get().getUserDetail().getGender())
+                .dob(foundAccount.get().getUserDetail().getDob())
+                .address(foundAccount.get().getUserDetail().getAddress())
+                .phoneNumber(foundAccount.get().getUserDetail().getPhoneNumber())
+                .build();
+
+        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS, userDetail);
     }
 
     private Account buildAccount(AccountDto accountDto, UserDetail userDetail) {

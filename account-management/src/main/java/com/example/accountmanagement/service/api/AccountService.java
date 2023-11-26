@@ -7,4 +7,6 @@ import com.example.accountmanagement.domain.dto.AccountDto;
 public interface AccountService {
 
     CommonResponse createAccount(AccountDto accountDto);
+
+    CommonResponse getUserDetailByAccount(String accountNumber);
 }

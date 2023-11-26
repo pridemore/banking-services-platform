@@ -4,10 +4,7 @@ import com.example.accountmanagement.common.response.CommonResponse;
 import com.example.accountmanagement.domain.dto.AccountDto;
 import com.example.accountmanagement.service.api.AccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,4 +17,11 @@ public class AccountController {
     public CommonResponse createAccount(@RequestBody AccountDto accountDto){
         return accountService.createAccount(accountDto);
     }
+
+    @GetMapping("/getUserDetailsByAccount/{accountNumber}")
+    public CommonResponse getUserDetailsByAccountNumber(@PathVariable("accountNumber") String accountNumber){
+        return accountService.getUserDetailByAccount(accountNumber);
+    }
+
+
 }
