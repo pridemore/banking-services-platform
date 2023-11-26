@@ -20,6 +20,7 @@ import javax.persistence.OneToMany;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -40,6 +41,16 @@ public class UserDetailServiceImpl implements UserDetailService {
         UserDetail savedUserDetail =userDetailRepository.save(buildUserDetails(userDetailDto));
 
         return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS,savedUserDetail) ;
+    }
+
+    @Override
+    public CommonResponse getUserDetailByNationalIdOrPhoneNumber(String nationalIdOrPhoneNumber) {
+
+        UserDetail foundUserDetail=userDetailRepository.findByNationalIdOrPhoneNumber(nationalIdOrPhoneNumber,nationalIdOrPhoneNumber);
+        if(Objects.isNull(foundUserDetail)){
+            return new CommonResponse().buildErrorResponse("User Details Not Found.");
+        }
+        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS,foundUserDetail);
     }
 
     private UserDetail buildUserDetails(UserDetailDto userDetailDto) {

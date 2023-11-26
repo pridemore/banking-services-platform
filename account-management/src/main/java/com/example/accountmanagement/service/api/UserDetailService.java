@@ -6,4 +6,6 @@ import com.example.accountmanagement.domain.dto.UserDetailDto;
 
 public interface UserDetailService {
     CommonResponse createUserDetail(UserDetailDto customerDetailDto);
+
+    CommonResponse getUserDetailByNationalIdOrPhoneNumber(String nationalIdOrPhoneNumber);
 }

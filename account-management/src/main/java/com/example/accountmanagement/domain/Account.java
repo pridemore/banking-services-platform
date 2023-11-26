@@ -2,6 +2,7 @@ package com.example.accountmanagement.domain;
 
 import com.example.accountmanagement.common.enums.AccountType;
 import com.example.accountmanagement.common.enums.Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,8 +30,9 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
-    @ManyToOne
-    @JoinColumn(name="userDetailId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="userDetailId",updatable = false, nullable = false)
+    @JsonBackReference
     private UserDetail userDetail;
 
     private double accountBalance;

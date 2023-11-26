@@ -2,6 +2,7 @@ package com.example.accountmanagement.domain;
 
 import com.example.accountmanagement.common.enums.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,7 +42,8 @@ public class UserDetail {
     @Column(unique = true)
     private String phoneNumber;
 
-    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER, orphanRemoval=true,mappedBy = "userDetail")
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval=true,mappedBy = "userDetail")
+    @JsonManagedReference
     private List<Account> accounts;
 
     @Enumerated(EnumType.STRING)
