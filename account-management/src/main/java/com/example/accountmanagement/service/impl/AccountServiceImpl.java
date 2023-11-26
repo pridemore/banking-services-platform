@@ -75,6 +75,16 @@ public class AccountServiceImpl implements AccountService {
         return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS,updatedAccount);
     }
 
+    @Override
+    public CommonResponse getBalanceByAccount(String accountNumber) {
+        Optional<Account> foundAccount = accountRepository.findByAccountNumber(accountNumber);
+
+        if (!foundAccount.isPresent()) {
+            return new CommonResponse().buildErrorResponse("Account Does Not Exist");
+        }
+        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS,foundAccount.get().getAccountBalance());
+    }
+
     private Account buildAccount(AccountDto accountDto, UserDetail userDetail) {
         return Account.builder()
                 .accountNumber(accountDto.getAccountNumber())

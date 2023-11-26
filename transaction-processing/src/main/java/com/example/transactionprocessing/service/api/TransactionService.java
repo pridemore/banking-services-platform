@@ -1,13 +1,14 @@
 package com.example.transactionprocessing.service.api;
 
 import com.example.transactionprocessing.common.response.CommonResponse;
-import com.example.transactionprocessing.domain.dto.CheckBalanceDto;
+import com.example.transactionprocessing.domain.dto.DepositDto;
+import com.example.transactionprocessing.domain.dto.WithdrawDto;
 
 public interface TransactionService {
-    CommonResponse checkBalance(CheckBalanceDto checkBalanceDto);
+    CommonResponse checkBalance(String accountNumber);
 
-    CommonResponse deposit();
+    CommonResponse deposit(DepositDto depositDto);
 
-    CommonResponse withdraw();
+    CommonResponse withdraw(WithdrawDto withdrawDto);
 
 }

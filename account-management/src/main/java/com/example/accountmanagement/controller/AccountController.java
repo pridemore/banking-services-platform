@@ -29,5 +29,10 @@ public class AccountController {
         return accountService.updateAccount(updateAccountDto);
     }
 
+    @GetMapping("/getBalanceByAccount/{accountNumber}")
+    public CommonResponse getBalanceByAccount(@PathVariable("accountNumber")String accountNumber){
+        return accountService.getBalanceByAccount(accountNumber);
+    }
+
 
 }

@@ -12,4 +12,6 @@ public interface AccountService {
     CommonResponse getUserDetailByAccount(String accountNumber);
 
     CommonResponse updateAccount(UpdateAccountDto updateAccountDto);
+
+    CommonResponse getBalanceByAccount(String accountNumber);
 }
