@@ -1,7 +1,5 @@
-package com.example.transactionprocessing.domain;
+package com.example.customersupport.domain;
 
-import com.example.transactionprocessing.common.enums.TransactionStatus;
-import com.example.transactionprocessing.common.enums.TransactionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,15 +7,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.OffsetDateTime;
 
-@Entity
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Transaction {
+public class Ticket {
 
     @Id
     @GeneratedValue(
@@ -25,20 +26,11 @@ public class Transaction {
     )
     private long id;
 
-    @Column(unique = true)
-    private String transactionReference;
+    private String ticketReference;
 
     private String accountNumber;
 
-    private double amount;
-
-    private double balance;
-
-    @Enumerated(EnumType.STRING)
-    private TransactionType transactionType;
-
-    @Enumerated(EnumType.STRING)
-    private TransactionStatus status;
+    private String queryDescription;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private OffsetDateTime dateCreated;

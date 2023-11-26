@@ -38,7 +38,10 @@ public class UserDetail {
 
     private String address;
 
-    @OneToMany(mappedBy = "userDetail")
+    @Column(unique = true)
+    private String phoneNumber;
+
+    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER, orphanRemoval=true,mappedBy = "userDetail")
     private List<Account> accounts;
 
     @Enumerated(EnumType.STRING)
