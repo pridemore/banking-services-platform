@@ -7,6 +7,7 @@ import com.example.transactionprocessing.common.enums.TransactionType;
 import com.example.transactionprocessing.common.response.CommonResponse;
 import com.example.transactionprocessing.domain.Transaction;
 import com.example.transactionprocessing.domain.dto.DepositDto;
+import com.example.transactionprocessing.domain.dto.StatementDto;
 import com.example.transactionprocessing.domain.dto.UpdateAccountDto;
 import com.example.transactionprocessing.domain.dto.WithdrawDto;
 import com.example.transactionprocessing.feignclients.AccountManagementConsumer;
@@ -16,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +55,13 @@ public class TransactionServiceImpl implements TransactionService {
         log.info("Existing Balance : {}", existingBalance);
         Transaction transactionResponse = processTransactionWithdrawRequest(withdrawDto, existingBalance);
         return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS, transactionResponse);
+    }
+
+    @Override
+    public CommonResponse getTransactionHistory(StatementDto statementDto) {
+        List<Transaction> transactionHistory = transactionRepository.findTransactionHistory(
+                statementDto.getAccountNumber(), statementDto.getStartDate(), statementDto.getEndDate());
+        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS,transactionHistory);
     }
 
     private Transaction processTransactionDepositRequest(DepositDto depositDto, Double existingBalance) {
