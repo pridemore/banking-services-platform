@@ -2,6 +2,7 @@ package com.example.transactionprocessing.controller;
 
 import com.example.transactionprocessing.common.response.CommonResponse;
 import com.example.transactionprocessing.domain.dto.DepositDto;
+import com.example.transactionprocessing.domain.dto.WithdrawDto;
 import com.example.transactionprocessing.service.api.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,11 @@ public class TransactionController {
     @PostMapping("/deposit")
     public CommonResponse depositFunds(@RequestBody DepositDto depositDto) {
         return transactionService.deposit(depositDto);
+    }
+
+    @PostMapping("/withdraw")
+    public CommonResponse WithdrawFunds(@RequestBody WithdrawDto withdrawDto) {
+        return transactionService.withdraw(withdrawDto);
     }
 
 }
