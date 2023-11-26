@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 
@@ -20,7 +21,7 @@ import java.time.OffsetDateTime;
 public class Ticket {
 
     @Id
-    private long id;
+    private String id;
 
     private String ticketReference;
 
@@ -29,8 +30,8 @@ public class Ticket {
     private String queryDescription;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private OffsetDateTime dateCreated;
+    private LocalDateTime dateCreated;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private OffsetDateTime lastUpdated;
+    private LocalDateTime lastUpdated;
 }

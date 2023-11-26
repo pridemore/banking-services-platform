@@ -4,8 +4,8 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-import static com.example.transactionprocessing.common.SystemConstants.FAILURE_INT_VALUE;
-import static com.example.transactionprocessing.common.SystemConstants.SUCCESS_INT_VALUE;
+import static com.example.customersupport.common.SystemConstants.FAILURE_INT_VALUE;
+import static com.example.customersupport.common.SystemConstants.SUCCESS_INT_VALUE;
 
 
 @Data

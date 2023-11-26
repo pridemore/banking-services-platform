@@ -15,6 +15,7 @@ import com.example.transactionprocessing.persistance.TransactionRepository;
 import com.example.transactionprocessing.service.api.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,6 +31,13 @@ public class TransactionServiceImpl implements TransactionService {
     private final AccountManagementConsumer accountManagementConsumer;
 
     private final TransactionRepository transactionRepository;
+
+    @Value("${transaction-notification-service-queue}")
+    private String queue;
+    @Value("${transaction-notification-service-exchange}")
+    private String exchange;
+    @Value("${transaction-notification-service-key}")
+    private String routingKey;
 
 
     @Override
