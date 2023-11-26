@@ -62,6 +62,7 @@ public class UserDetailServiceImpl implements UserDetailService {
                 .dob(userDetailDto.getDob())
                 .address(userDetailDto.getAddress())
                 .phoneNumber(userDetailDto.getPhoneNumber())
+                .email(userDetailDto.getEmail())
                 .status(Status.ACTIVE)
                 .dateCreated(OffsetDateTime.now())
                 .lastUpdated(OffsetDateTime.now())

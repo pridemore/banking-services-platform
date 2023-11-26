@@ -13,11 +13,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableRabbit
 public class RabbitConfig {
-    @Value("${transaction-notification-service-queue}")
+    @Value("${transaction.notification.service.queue}")
     private String queue;
-    @Value("${transaction-notification-service-exchange}")
+    @Value("${transaction.notification.service.exchange}")
     private String exchange;
-    @Value("${transaction-notification-service-key}")
+    @Value("${transaction.notification.service.key}")
     private String routingKey;
 
     @Bean

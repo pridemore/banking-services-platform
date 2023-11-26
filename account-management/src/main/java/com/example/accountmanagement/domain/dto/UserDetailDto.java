@@ -31,4 +31,6 @@ public class UserDetailDto {
 
     private String phoneNumber;
 
+    private String email;
+
 }

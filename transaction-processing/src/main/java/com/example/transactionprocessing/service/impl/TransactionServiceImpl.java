@@ -15,6 +15,7 @@ import com.example.transactionprocessing.persistance.TransactionRepository;
 import com.example.transactionprocessing.service.api.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -32,11 +33,13 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
 
-    @Value("${transaction-notification-service-queue}")
+    private final RabbitTemplate rabbitTemplate;
+
+    @Value("${transaction.notification.service.queue}")
     private String queue;
-    @Value("${transaction-notification-service-exchange}")
+    @Value("${transaction.notification.service.exchange}")
     private String exchange;
-    @Value("${transaction-notification-service-key}")
+    @Value("${transaction.notification.service.key}")
     private String routingKey;
 
 
@@ -82,12 +85,12 @@ public class TransactionServiceImpl implements TransactionService {
                 .amount(depositDto.getAmount())
                 .balance(balance)
                 .transactionType(TransactionType.DEPOSIT)
-                .status(TransactionStatus.COMPLETED)
+                .status(TransactionStatus.PENDING)
                 .dateCreated(OffsetDateTime.now())
                 .lastUpdated(OffsetDateTime.now())
                 .build();
 
-        return saveTransactionAndUpdateBalance(transaction);
+        return saveTransactionAndUpdateBalance(transactionRepository.save(transaction));
     }
 
     private Transaction processTransactionWithdrawRequest(WithdrawDto withdrawDto, Double existingBalance) {
@@ -100,26 +103,19 @@ public class TransactionServiceImpl implements TransactionService {
                 .amount(withdrawDto.getAmount())
                 .balance(balance)
                 .transactionType(TransactionType.WITHDRAWAL)
-                .status(TransactionStatus.COMPLETED)
+                .status(TransactionStatus.PENDING)
                 .dateCreated(OffsetDateTime.now())
                 .lastUpdated(OffsetDateTime.now())
                 .build();
-        return saveTransactionAndUpdateBalance(transaction);
+
+        return saveTransactionAndUpdateBalance(transactionRepository.save(transaction));
     }
 
     private Transaction saveTransactionAndUpdateBalance(Transaction transaction) {
-        Transaction savedTransaction = transactionRepository.save(transaction);
-
-        log.info("Transaction Reference : {}", savedTransaction.getTransactionReference());
-
-        UpdateAccountDto updateBalance = UpdateAccountDto.builder()
-                .accountNumber(transaction.getAccountNumber())
-                .accountBalance(transaction.getBalance())
-                .build();
-
-        accountManagementConsumer.updateAccount(updateBalance);
-
-        log.info("Updated Balance : {}", updateBalance.getAccountBalance());
-        return savedTransaction;
+        rabbitTemplate.convertAndSend(exchange,routingKey,transaction.getId());
+        transaction.setStatus(TransactionStatus.ADDED_TO_QUEUE);
+        return transactionRepository.save(transaction);
     }
+
+
 }

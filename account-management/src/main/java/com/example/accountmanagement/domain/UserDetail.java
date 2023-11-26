@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -41,6 +42,10 @@ public class UserDetail {
 
     @Column(unique = true)
     private String phoneNumber;
+
+    @Column(unique = true)
+    @Email
+    private String email;
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval=true,mappedBy = "userDetail")
     @JsonManagedReference

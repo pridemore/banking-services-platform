@@ -16,4 +16,7 @@ public interface AccountManagementConsumer {
 
     @PutMapping("/api/v1/account/update")
     CommonResponse updateAccount(@RequestBody UpdateAccountDto updateBalance);
+
+    @GetMapping("/api/v1/account/getUserDetailsByAccount/{accountNumber}")
+    CommonResponse getUserDetailsByAccountNumber(@PathVariable("accountNumber") String accountNumber);
 }
