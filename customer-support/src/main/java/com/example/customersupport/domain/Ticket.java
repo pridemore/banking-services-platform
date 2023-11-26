@@ -16,7 +16,7 @@ import java.time.OffsetDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection ="Ticket")
+@Document(collection ="ticket")
 public class Ticket {
 
     @Id
