@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient("ACCOUNT-MANAGEMENT-SERVICE")
+@FeignClient("api-gateway")
 public interface AccountManagementConsumer {
 
-    @GetMapping("/api/v1/account/getBalanceByAccount/{accountNumber}")
+    @GetMapping("/account-management-service/api/v1/account/getBalanceByAccount/{accountNumber}")
     CommonResponse getBalanceByAccount(@PathVariable("accountNumber") String accountNumber);
 
-    @PutMapping("/api/v1/account/update")
+    @PutMapping("/account-management-service/api/v1/account/update")
     CommonResponse updateAccount(@RequestBody UpdateAccountDto updateBalance);
 
 }
