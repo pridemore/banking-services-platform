@@ -3,28 +3,24 @@ package com.example.accountmanagement.service.impl;
 import com.example.accountmanagement.common.SystemConstants;
 import com.example.accountmanagement.common.enums.Status;
 import com.example.accountmanagement.common.response.CommonResponse;
-import com.example.accountmanagement.domain.Account;
 import com.example.accountmanagement.domain.UserDetail;
 import com.example.accountmanagement.domain.dto.UserDetailDto;
 import com.example.accountmanagement.persistance.UserDetailRepository;
 import com.example.accountmanagement.service.api.UserDetailService;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserDetailServiceImpl implements UserDetailService {
 
     private final UserDetailRepository userDetailRepository;
@@ -38,19 +34,42 @@ public class UserDetailServiceImpl implements UserDetailService {
             return new CommonResponse().buildErrorResponse("User Already Exist.");
         }
 
-        UserDetail savedUserDetail =userDetailRepository.save(buildUserDetails(userDetailDto));
+        UserDetail savedUserDetail = userDetailRepository.save(buildUserDetails(userDetailDto));
 
-        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS,savedUserDetail) ;
+        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS, savedUserDetail);
     }
 
     @Override
     public CommonResponse getUserDetailByNationalIdOrPhoneNumber(String nationalIdOrPhoneNumber) {
 
-        UserDetail foundUserDetail=userDetailRepository.findByNationalIdOrPhoneNumber(nationalIdOrPhoneNumber,nationalIdOrPhoneNumber);
-        if(Objects.isNull(foundUserDetail)){
+        UserDetail foundUserDetail = userDetailRepository.findByNationalIdOrPhoneNumber(nationalIdOrPhoneNumber, nationalIdOrPhoneNumber);
+        if (Objects.isNull(foundUserDetail)) {
             return new CommonResponse().buildErrorResponse("User Details Not Found.");
         }
-        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS,foundUserDetail);
+        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS, foundUserDetail);
+    }
+
+    @Override
+    public CommonResponse updateUserDetail(Long userDetailId,UserDetailDto updateUserDetailDto) {
+        Optional<UserDetail> foundUserDetail = userDetailRepository.findById(userDetailId);
+        if (!foundUserDetail.isPresent()) {
+            return new CommonResponse().buildErrorResponse("User Not Found.");
+        }
+        UserDetail updatedUserDetail = userDetailRepository.save(buildUpdateUserDetail(foundUserDetail.get(),updateUserDetailDto));
+        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS,updatedUserDetail);
+    }
+
+    private UserDetail buildUpdateUserDetail(UserDetail userDetail, UserDetailDto updateUserDetailDto) {
+        userDetail.setName(updateUserDetailDto.getName() !=null ? updateUserDetailDto.getName() :userDetail.getName());
+        userDetail.setSurname(updateUserDetailDto.getSurname() !=null ? updateUserDetailDto.getSurname() : userDetail.getSurname());
+        userDetail.setNationalId(updateUserDetailDto.getNationalId() !=null ? updateUserDetailDto.getNationalId() : userDetail.getNationalId());
+        userDetail.setGender(updateUserDetailDto.getGender() !=null ? updateUserDetailDto.getGender() : userDetail.getGender());
+        userDetail.setDob(updateUserDetailDto.getDob() !=null ? updateUserDetailDto.getDob():userDetail.getDob());
+        userDetail.setAddress(updateUserDetailDto.getAddress() !=null ?updateUserDetailDto.getAddress() : userDetail.getAddress());
+        userDetail.setPhoneNumber(updateUserDetailDto.getPhoneNumber() !=null ? updateUserDetailDto.getPhoneNumber() : userDetail.getPhoneNumber());
+        userDetail.setEmail(updateUserDetailDto.getEmail()!=null ? updateUserDetailDto.getEmail() : userDetail.getEmail());
+        userDetail.setLastUpdated(OffsetDateTime.now());
+        return userDetail;
     }
 
     private UserDetail buildUserDetails(UserDetailDto userDetailDto) {

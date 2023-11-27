@@ -3,10 +3,9 @@ package com.example.accountmanagement.domain;
 import com.example.accountmanagement.common.enums.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -15,10 +14,11 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 @Entity
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
 public class UserDetail {
     @Id
     @GeneratedValue(
@@ -36,6 +36,7 @@ public class UserDetail {
     private String gender;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate dob;
 
     private String address;
@@ -47,7 +48,7 @@ public class UserDetail {
     @Email
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval=true,mappedBy = "userDetail")
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "userDetail")
     @JsonManagedReference
     private List<Account> accounts;
 
