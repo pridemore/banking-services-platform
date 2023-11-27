@@ -13,6 +13,7 @@ import com.example.accountmanagement.persistance.UserDetailRepository;
 import com.example.accountmanagement.service.api.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -78,6 +79,7 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
+    @Cacheable(value="accountBalance",key ="#accountNumber")
     public CommonResponse getBalanceByAccount(String accountNumber) {
         Optional<Account> foundAccount = accountRepository.findByAccountNumber(accountNumber);
 

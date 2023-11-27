@@ -35,6 +35,9 @@ public class MessageConsumer {
     @Value("${spring.mail.username}")
     private String username;
 
+    @Value("${api.key}")
+    private String apikey;
+
     private static final String QUEUE = "transaction-notification-service-queue";
 
     @RabbitListener(queues = QUEUE, concurrency = "1")
@@ -47,7 +50,7 @@ public class MessageConsumer {
                     .accountNumber(transactionById.get().getAccountNumber())
                     .accountBalance(transactionById.get().getBalance())
                     .build();
-            CommonResponse updateAccountResponse = accountManagementConsumer.updateAccount(updateBalance);
+            CommonResponse updateAccountResponse = accountManagementConsumer.updateAccount(apikey,updateBalance);
             UpdateAccountDto response = objectMapper.convertValue(updateAccountResponse.getResult(), UpdateAccountDto.class);
 
             transactionById.get().setStatus(TransactionStatus.COMPLETED);

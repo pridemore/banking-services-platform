@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,8 +28,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class TransactionServiceImpl implements TransactionService {
-
-
     private final AccountManagementConsumer accountManagementConsumer;
 
     private final TransactionRepository transactionRepository;
@@ -40,17 +39,20 @@ public class TransactionServiceImpl implements TransactionService {
     @Value("${transaction.notification.service.key}")
     private String routingKey;
 
+    @Value("${api.key}")
+    private String apikey;
+
 
     @Override
     public CommonResponse checkBalance(String accountNumber) {
-        CommonResponse balanceByAccount = accountManagementConsumer.getBalanceByAccount(accountNumber);
+        CommonResponse balanceByAccount = accountManagementConsumer.getBalanceByAccount(apikey,accountNumber);
         log.info("Balance Returned : {}", balanceByAccount.getResult());
         return balanceByAccount;
     }
 
     @Override
     public CommonResponse deposit(DepositDto depositDto) {
-        CommonResponse getBalanceByAccount = accountManagementConsumer.getBalanceByAccount(depositDto.getAccountNumber());
+        CommonResponse getBalanceByAccount = accountManagementConsumer.getBalanceByAccount(apikey,depositDto.getAccountNumber());
         Double existingBalance = (Double) getBalanceByAccount.getResult();
         log.info("Existing Balance : {}", existingBalance);
         Transaction transactionResponse = processTransactionDepositRequest(depositDto, existingBalance);
@@ -59,7 +61,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public CommonResponse withdraw(WithdrawDto withdrawDto) {
-        CommonResponse getBalanceByAccount = accountManagementConsumer.getBalanceByAccount(withdrawDto.getAccountNumber());
+        CommonResponse getBalanceByAccount = accountManagementConsumer.getBalanceByAccount(apikey,withdrawDto.getAccountNumber());
         Double existingBalance = (Double) getBalanceByAccount.getResult();
         log.info("Existing Balance : {}", existingBalance);
         Transaction transactionResponse = processTransactionWithdrawRequest(withdrawDto, existingBalance);
@@ -70,7 +72,7 @@ public class TransactionServiceImpl implements TransactionService {
     public CommonResponse getTransactionHistory(StatementDto statementDto) {
         List<Transaction> transactionHistory = transactionRepository.findTransactionHistory(
                 statementDto.getAccountNumber(), statementDto.getStartDate(), statementDto.getEndDate());
-        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS,transactionHistory);
+        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS, transactionHistory);
     }
 
     private Transaction processTransactionDepositRequest(DepositDto depositDto, Double existingBalance) {
@@ -87,8 +89,9 @@ public class TransactionServiceImpl implements TransactionService {
                 .dateCreated(OffsetDateTime.now())
                 .lastUpdated(OffsetDateTime.now())
                 .build();
-
-        return saveTransactionAndUpdateBalance(transactionRepository.save(transaction));
+        Transaction savedDepositTransaction = transactionRepository.save(transaction);
+        processTransactionAndUpdateBalance(savedDepositTransaction);
+        return savedDepositTransaction;
     }
 
     private Transaction processTransactionWithdrawRequest(WithdrawDto withdrawDto, Double existingBalance) {
@@ -105,14 +108,16 @@ public class TransactionServiceImpl implements TransactionService {
                 .dateCreated(OffsetDateTime.now())
                 .lastUpdated(OffsetDateTime.now())
                 .build();
-
-        return saveTransactionAndUpdateBalance(transactionRepository.save(transaction));
+        Transaction savedWithdrawTransaction = transactionRepository.save(transaction);
+        processTransactionAndUpdateBalance(savedWithdrawTransaction);
+        return savedWithdrawTransaction;
     }
 
-    private Transaction saveTransactionAndUpdateBalance(Transaction transaction) {
-        rabbitTemplate.convertAndSend(exchange,routingKey,transaction.getId());
+    @Async
+    void processTransactionAndUpdateBalance(Transaction transaction) {
+        rabbitTemplate.convertAndSend(exchange, routingKey, transaction.getId());
         transaction.setStatus(TransactionStatus.ADDED_TO_QUEUE);
-        return transactionRepository.save(transaction);
+        transactionRepository.save(transaction);
     }
 
 

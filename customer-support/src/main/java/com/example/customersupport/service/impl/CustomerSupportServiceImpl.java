@@ -16,6 +16,7 @@ import com.example.customersupport.service.api.CustomerSupportService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,6 +38,10 @@ public class CustomerSupportServiceImpl implements CustomerSupportService {
 
     @Value("${spring.mail.username}")
     private String username;
+
+    @Value("${api.key}")
+    private String apiKey;
+
     @Override
     public CommonResponse createTicket(TicketDto ticketDto) {
         Ticket ticket = buildTicket(ticketDto);
@@ -45,8 +50,9 @@ public class CustomerSupportServiceImpl implements CustomerSupportService {
         return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS, savedTicket);
     }
 
-    private void ticketCreationNotification(Ticket savedTicket) {
-        CommonResponse getUserDetails = accountManagementConsumer.getUserDetailsByAccountNumber(savedTicket.getAccountNumber());
+    @Async
+    void ticketCreationNotification(Ticket savedTicket) {
+        CommonResponse getUserDetails = accountManagementConsumer.getUserDetailsByAccountNumber(apiKey,savedTicket.getAccountNumber());
         UserDetailDto userDetailDto = objectMapper.convertValue(getUserDetails.getResult(), UserDetailDto.class);
         EmailNotification buildEmail = EmailNotification.builder()
                 .sender(username)
@@ -72,7 +78,6 @@ public class CustomerSupportServiceImpl implements CustomerSupportService {
     }
 
     private Ticket buildUpdateTicket(Ticket ticket, TicketDto ticketDto) {
-
         ticket.setQueryDescription(ticketDto.getQueryDescription() != null ? ticketDto.getQueryDescription() : ticket.getQueryDescription());
         ticket.setLastUpdated(LocalDateTime.now());
         return ticket;
