@@ -5,8 +5,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient("ACCOUNT-MANAGEMENT-SERVICE")
+@FeignClient("api-gateway")
 public interface AccountManagementConsumer {
-    @GetMapping("/api/v1/account/getUserDetailsByAccount/{accountNumber}")
+    @GetMapping("/account-management-service/api/v1/account/getUserDetailsByAccount/{accountNumber}")
     CommonResponse getUserDetailsByAccountNumber(@PathVariable("accountNumber") String accountNumber);
 }
