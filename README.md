@@ -17,6 +17,38 @@ The services communicate together and they have one entry point which is the api
 Both the Account-management-service and Transaction_processing connect to one database account_management_db and Customer-support connect to customersupportdb.
 Below is the diagram to show the setup of the banking-services-platform.
  
+To start the system below are the requirements in stegs
+1)	Install and setup Rabbit MQ to use defaults below url and  credentials as below 
+host=127.0.0.1
+port=5672
+username=guest
+password=guest
+
+2)	Setup Mysql database to run on below properties and create database account_management_db
+
+MySql Properties
+url=jdbc:mysql://localhost:3306
+username=root
+password=
+
+3)	Setup Mongo database to run on below properties and create a one document as ticket.
+
+Mongo db Properties
+host=localhost
+port=27017
+
+4)	Clone the application using the link https://github.com/pridemore/banking-services-platform.git
+5)	Download all the Maven dependences required and build the application
+6)	Start the Eureka services first by running the main class EurekaServerApplication 
+7)	Start the API gateway by running the main class ApiGatewayApplication
+8)	Start the Account management service by running main class AccountManagementApplication
+9)	Start the Transction Processing service by running the TransactionProcessingApplication.
+10)	Finally start the Customer support service by running the main class CustomerSupportApplication.
+
+Check if all services are registered on the Eureka using the url http://localhost:8761/
+Below interface should be visible if all started well.
+ 
+
 
 
 Below are the APIs in exposed using the gateway base url as below:
