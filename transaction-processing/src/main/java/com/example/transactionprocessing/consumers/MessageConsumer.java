@@ -5,6 +5,8 @@ import com.example.transactionprocessing.common.response.CommonResponse;
 import com.example.transactionprocessing.domain.Transaction;
 import com.example.transactionprocessing.domain.dto.UpdateAccountDto;
 import com.example.transactionprocessing.feignclients.AccountManagementConsumer;
+import com.example.transactionprocessing.notification.EmailNotification;
+import com.example.transactionprocessing.notification.EmailService;
 import com.example.transactionprocessing.persistance.TransactionRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

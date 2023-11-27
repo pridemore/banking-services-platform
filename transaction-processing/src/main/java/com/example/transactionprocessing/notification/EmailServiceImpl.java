@@ -1,4 +1,4 @@
-package com.example.transactionprocessing.consumers;
+package com.example.transactionprocessing.notification;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

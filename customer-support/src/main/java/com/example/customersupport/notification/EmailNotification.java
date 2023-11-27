@@ -1,4 +1,4 @@
-package com.example.transactionprocessing.consumers;
+package com.example.customersupport.notification;
 
 import lombok.Builder;
 import lombok.Data;

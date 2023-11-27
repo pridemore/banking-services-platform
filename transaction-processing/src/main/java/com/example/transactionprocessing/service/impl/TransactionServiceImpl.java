@@ -35,8 +35,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${transaction.notification.service.queue}")
-    private String queue;
     @Value("${transaction.notification.service.exchange}")
     private String exchange;
     @Value("${transaction.notification.service.key}")
