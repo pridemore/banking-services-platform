@@ -18,4 +18,9 @@ public class CustomerSupportController {
         return customerSupportService.createTicket(ticketDto);
     }
 
+    @PutMapping("/updateTicket/{ticketId}")
+    public CommonResponse updateTicket(@PathVariable("ticketId") String ticketId, @RequestBody TicketDto ticketDto){
+        return customerSupportService.updateTicket(ticketId,ticketDto);
+    }
+
 }

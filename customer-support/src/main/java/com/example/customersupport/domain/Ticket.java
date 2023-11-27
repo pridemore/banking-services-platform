@@ -1,5 +1,6 @@
 package com.example.customersupport.domain;
 
+import com.example.customersupport.common.enums.TicketStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +29,8 @@ public class Ticket {
     private String accountNumber;
 
     private String queryDescription;
+
+    private TicketStatus ticketStatus;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime dateCreated;

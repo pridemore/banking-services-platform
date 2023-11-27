@@ -7,13 +7,10 @@ import com.example.accountmanagement.domain.UserDetail;
 import com.example.accountmanagement.domain.dto.UserDetailDto;
 import com.example.accountmanagement.persistance.UserDetailRepository;
 import com.example.accountmanagement.service.api.UserDetailService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Optional;

@@ -6,4 +6,6 @@ import com.example.customersupport.domain.dto.TicketDto;
 public interface CustomerSupportService {
 
     CommonResponse createTicket(TicketDto ticketDto);
+
+    CommonResponse updateTicket(String ticketId, TicketDto ticketDto);
 }

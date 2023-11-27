@@ -57,6 +57,7 @@ public class AccountServiceImpl implements AccountService {
                 .dob(foundAccount.get().getUserDetail().getDob())
                 .address(foundAccount.get().getUserDetail().getAddress())
                 .phoneNumber(foundAccount.get().getUserDetail().getPhoneNumber())
+                .email(foundAccount.get().getUserDetail().getEmail())
                 .build();
 
         return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS, userDetail);
@@ -69,7 +70,7 @@ public class AccountServiceImpl implements AccountService {
             return new CommonResponse().buildErrorResponse("Account Does Not Exist");
         }
         accountToUpdate.get().setAccountBalance(updateAccountDto.getAccountBalance());
-        Account updatedAccount=accountRepository.save(accountToUpdate.get());
+        accountRepository.save(accountToUpdate.get());
         updateAccountDto.setEmail(accountToUpdate.get().getUserDetail().getEmail());
 
         return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS,updateAccountDto);
