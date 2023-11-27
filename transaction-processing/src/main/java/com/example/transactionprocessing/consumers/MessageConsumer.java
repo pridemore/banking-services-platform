@@ -6,6 +6,7 @@ import com.example.transactionprocessing.domain.Transaction;
 import com.example.transactionprocessing.domain.dto.UpdateAccountDto;
 import com.example.transactionprocessing.feignclients.AccountManagementConsumer;
 import com.example.transactionprocessing.persistance.TransactionRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -27,6 +28,8 @@ public class MessageConsumer {
 
     private final MessagePropertiesService messagePropertiesService;
 
+    private final ObjectMapper objectMapper;
+
     @Value("${spring.mail.username}")
     private String username;
 
@@ -42,11 +45,12 @@ public class MessageConsumer {
                     .accountNumber(transactionById.get().getAccountNumber())
                     .accountBalance(transactionById.get().getBalance())
                     .build();
-            accountManagementConsumer.updateAccount(updateBalance);
+            CommonResponse updateAccountResponse = accountManagementConsumer.updateAccount(updateBalance);
+            UpdateAccountDto response = objectMapper.convertValue(updateAccountResponse.getResult(), UpdateAccountDto.class);
+
             transactionById.get().setStatus(TransactionStatus.COMPLETED);
             transactionRepository.save(transactionById.get());
-            String accountEmail = "2020dataanalytics@gmail.com";
-            sendEmailNotification(transactionById.get(), accountEmail);
+            sendEmailNotification(transactionById.get(), response.getEmail());
             log.info("Updated Balance : {}", updateBalance.getAccountBalance());
         }
 

@@ -16,7 +16,7 @@ public class EmailServiceImpl implements EmailService{
     @Override
     public String send(EmailNotification emailNotification) {
 
-        log.info("### Sending Email.............");
+        log.info("### Sending Email to {} .............",emailNotification.getTo());
 
         try{
             SimpleMailMessage mailMessage=new SimpleMailMessage();

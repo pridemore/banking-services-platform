@@ -1,7 +1,6 @@
 package com.example.accountmanagement.service.impl;
 
 import com.example.accountmanagement.common.SystemConstants;
-import com.example.accountmanagement.common.enums.AccountType;
 import com.example.accountmanagement.common.enums.Status;
 import com.example.accountmanagement.common.response.CommonResponse;
 import com.example.accountmanagement.domain.Account;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
@@ -72,8 +70,11 @@ public class AccountServiceImpl implements AccountService {
         }
         accountToUpdate.get().setAccountBalance(updateAccountDto.getAccountBalance());
         Account updatedAccount=accountRepository.save(accountToUpdate.get());
-        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS,updatedAccount);
+        updateAccountDto.setEmail(accountToUpdate.get().getUserDetail().getEmail());
+
+        return new CommonResponse().buildSuccessResponse(SystemConstants.SUCCESS,updateAccountDto);
     }
+
 
     @Override
     public CommonResponse getBalanceByAccount(String accountNumber) {

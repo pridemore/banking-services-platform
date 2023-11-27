@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class UpdateAccountDto {
     private String accountNumber;
     private double accountBalance;
+    private String email;
 }
